@@ -1,16 +1,23 @@
+import logging
+import os
 from fastapi import FastAPI
-from app.schemas import AuditRequest
-from app.auditor import scan_project
-from app.generator import generate_test_stub
+from dotenv import load_dotenv
+from app.routes import router as api_router
 
-app = FastAPI()
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+load_dotenv(os.path.join(BASE_DIR, ".env"))
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s [%(name)s] %(message)s")
 
-@app.post("/audit")
-def audit(req: AuditRequest):
-    issues = scan_project(req.path)
-    return {"issues": issues}
+app = FastAPI(
+    title="QA IDE Backend",
+    description="API de auditoria de código para a extensão QA IDE",
+    version="0.1.0",
+)
 
-@app.post("/generate-test")
-def generate_test(file_path: str):
-    code = generate_test_stub(file_path)
-    return {"test_code": code}
+app.include_router(api_router)
+
+@app.get("/")
+def health_check():
+    return {"status": "ok", "service": "qa-ide backend"}
+
+

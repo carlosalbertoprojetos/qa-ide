@@ -1,0 +1,65 @@
+﻿{
+  "name": "qa-ide",
+  "displayName": "QA IDE",
+  "publisher": "qa-ide",
+  "version": "0.1.0",
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "onCommand:qa.audit",
+    "onCommand:qa.generateTests",
+    "onCommand:qa.runTests",
+    "onCommand:qa.fullAudit",
+    "onCommand:qa.openLatestHistory",
+    "onCommand:qa.browseHistory"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "qa.audit",
+        "title": "QA: Auditar Codigo",
+        "category": "QA IDE"
+      },
+      {
+        "command": "qa.generateTests",
+        "title": "QA: Gerar Testes",
+        "category": "QA IDE"
+      },
+      {
+        "command": "qa.runTests",
+        "title": "QA: Rodar Testes",
+        "category": "QA IDE"
+      },
+      {
+        "command": "qa.fullAudit",
+        "title": "QA: Auditoria Completa Inteligente",
+        "category": "QA IDE"
+      },
+      {
+        "command": "qa.openLatestHistory",
+        "title": "QA: Abrir Ultimo Historico",
+        "category": "QA IDE"
+      },
+      {
+        "command": "qa.browseHistory",
+        "title": "QA: Escolher Historico",
+        "category": "QA IDE"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./tsconfig.json",
+    "watch": "tsc -w -p ./tsconfig.json"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "axios": "^1.6.4"
+  }
+}

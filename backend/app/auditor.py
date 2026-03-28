@@ -1,28 +1,30 @@
-import os
+from pathlib import Path
 
-EXCLUDED_DIRS = ["__pycache__", "migrations", ".git", "node_modules"]
+EXCLUDED_DIRS = {"__pycache__", "migrations", ".git", "node_modules", "venv"}
 
-def is_test_file(filename):
-    return filename.startswith("test_") or filename.endswith("_test.py")
+
+def is_test_file(path: Path) -> bool:
+    name = path.name
+    return name.startswith("test_") or name.endswith("_test.py")
+
 
 def scan_project(path: str):
+    root = Path(path)
+    if not root.exists():
+        return [{"file": str(root), "issue": "Caminho não existe"}]
+
+    python_files = [p for p in root.rglob("*.py") if not any(part in EXCLUDED_DIRS for part in p.parts)]
+    file_names = {p.name for p in python_files}
+
     issues = []
+    for file_path in python_files:
+        if is_test_file(file_path) or file_path.name == "__init__.py":
+            continue
 
-    for root, dirs, files in os.walk(path):
-        dirs[:] = [d for d in dirs if d not in EXCLUDED_DIRS]
+        base_name = file_path.stem
+        test_candidates = {f"test_{base_name}.py", f"{base_name}_test.py"}
 
-        for file in files:
-            if file.endswith(".py") and not is_test_file(file):
-                full_path = os.path.join(root, file)
-
-                # verifica se existe teste correspondente
-                test_file_1 = f"test_{file}"
-                test_file_2 = file.replace(".py", "_test.py")
-
-                if test_file_1 not in files and test_file_2 not in files:
-                    issues.append({
-                        "file": full_path,
-                        "issue": "Sem teste automatizado"
-                    })
+        if not test_candidates.intersection(file_names):
+            issues.append({"file": str(file_path), "issue": "Sem teste automatizado"})
 
     return issues
