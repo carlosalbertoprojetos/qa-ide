@@ -1,0 +1,13 @@
+{
+  "contributes": {
+    "commands": [
+      {
+        "command": "qa.auditProject",
+        "title": "QA: Auditar projeto"
+      }
+    ]
+  },
+  "dependencies": {
+    "axios": "^1.14.0"
+  }
+}
